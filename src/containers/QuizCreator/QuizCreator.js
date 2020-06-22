@@ -6,7 +6,8 @@ import {createControl, validate, validateForm} from '../../form/formFramework'
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary'
 import Select from '../../components/UI/Select/Select'
 import { connect } from 'react-redux'
-import { createQuizQestion, finishCreateQuiz } from '../../store/actions/create'
+import { finishCreateQuiz, createQuizQuestion } from '../../store/actions/create'
+
 
 
 function createOptionControl(number) {
@@ -171,15 +172,15 @@ class QuizCreator extends Component {
   }
 }
 
-function mapStateToProps(state) {
+const mapStateToProps = state => {
   return {
     quiz: state.create.quiz
   }
 }
 
-function mapDispatchToProps(dispatch) {
+const mapDispatchToProps = dispatch => {
   return {
-    createQuizQestion: item => dispatch(createQuizQestion(item)),
+    createQuizQestion: item => dispatch(createQuizQuestion(item)),
     finishCreateQuiz: () => dispatch(finishCreateQuiz())
   }
 }
