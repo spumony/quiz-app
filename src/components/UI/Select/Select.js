@@ -1,30 +1,41 @@
-import React from 'react'
-import classes from './Select.module.css'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classes from './Select.module.css';
 
-const Select = props => {
-  const htmlFor = `${props.label}-${Math.random()}`
+const Select = ({
+  label,
+  value,
+  onChange,
+  options,
+}) => {
+  const htmlFor = `${label}-${Math.random()}`;
 
   return (
     <div className={classes.Select}>
-      <label htmlFor={htmlFor}>{props.label}</label>
+      <label htmlFor={htmlFor}>{label}</label>
       <select
         id={htmlFor}
-        value={props.value}
-        onChange={props.onChange}
+        value={value}
+        onChange={onChange}
       >
-        {props.options.map((option, index) => {
-          return (
-            <option
-              value={option.value}
-              key={option.value + index}
-            >
-              {option.text}
-            </option>
-          )
-        }) }
+        {options.map((option, index) => (
+          <option
+            value={option.value}
+            key={option.value + index}
+          >
+            {option.text}
+          </option>
+        ))}
       </select>
     </div>
-  )
-}
+  );
+};
 
-export default Select
+Select.propTypes = {
+  label: PropTypes.string,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+  options: PropTypes.object,
+};
+
+export default Select;
