@@ -58,7 +58,7 @@ class QuizCreator extends Component {
       ],
     };
 
-    this.props.createQuizQestion(questionItem);
+    this.props.createQuizQuestion(questionItem);
 
     this.setState({
       isFormValid: false,
