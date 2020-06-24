@@ -1,19 +1,19 @@
-import React, {Component} from 'react'
-import classes from './Quiz.module.css'
-import ActiveQuiz from '../../components/ActiveQuiz/ActiveQuiz'
-import FinishedQuiz from '../../components/FinishedQuiz/FinishedQuiz'
-import Loader from '../../components/UI/Loader/Loader'
-import {connect} from 'react-redux'
-import {fetchQuizById, quizAnswerClick, retryQuiz} from '../../store/actions/quiz'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import classes from './Quiz.module.css';
+import ActiveQuiz from '../../components/ActiveQuiz/ActiveQuiz';
+import FinishedQuiz from '../../components/FinishedQuiz/FinishedQuiz';
+import Loader from '../../components/UI/Loader/Loader';
+import { fetchQuizById, quizAnswerClick, retryQuiz } from '../../store/actions/quiz';
 
 class Quiz extends Component {
-
   componentDidMount() {
-    this.props.fetchQuizById(this.props.match.params.id)
+    this.props.fetchQuizById(this.props.match.params.id);
   }
 
   componentWillUnmount() {
-    this.props.retryQuiz()
+    this.props.retryQuiz();
   }
 
   render() {
@@ -22,48 +22,68 @@ class Quiz extends Component {
         <div className={classes.QuizWrapper}>
           <h1>Ответьте на все вопросы</h1>
 
-          {
-            this.props.loading || !this.props.quiz
-             ? <Loader />
-             : this.props.isFinished
-              ? <FinishedQuiz
-                results={this.props.results}
-                quiz={this.props.quiz}
-                onRetry={this.props.retryQuiz}
-              />
-              : <ActiveQuiz
-                answers={this.props.quiz[this.props.activeQuestion].answers}
-                question={this.props.quiz[this.props.activeQuestion].question}
-                onAnswerClick={this.props.quizAnswerClick}
-                quizLength={this.props.quiz.length}
-                answerNumber={this.props.activeQuestion + 1}
-                state={this.props.answerState}
-              />
-
+          {this.props.loading || !this.props.quiz
+            ? <Loader />
+            : this.props.isFinished
+              ? (
+                <FinishedQuiz
+                  results={this.props.results}
+                  quiz={this.props.quiz}
+                  onRetry={this.props.retryQuiz}
+                />
+              )
+              : (
+                <ActiveQuiz
+                  answers={this.props.quiz[this.props.activeQuestion].answers}
+                  question={this.props.quiz[this.props.activeQuestion].question}
+                  onAnswerClick={this.props.quizAnswerClick}
+                  quizLength={this.props.quiz.length}
+                  answerNumber={this.props.activeQuestion + 1}
+                  state={this.props.answerState}
+                />
+              )
           }
         </div>
       </div>
-    )
+    );
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    results: state.quiz.results,
-    isFinished: state.quiz.isFinished,
-    activeQuestion: state.quiz.activeQuestion,
-    answerState: state.quiz.answerState,
-    quiz: state.quiz.quiz,
-    loading: state.quiz.loading
-  }
-}
+const mapStateToProps = ({
+  quiz: {
+    results,
+    isFinished,
+    activeQuestion,
+    answerState,
+    quiz,
+    loading,
+  },
+}) => ({
+  results,
+  isFinished,
+  activeQuestion,
+  answerState,
+  quiz,
+  loading,
+});
 
-function mapDispatchToProps(dispatch) {
-  return {
-    fetchQuizById: id => dispatch(fetchQuizById(id)),
-    quizAnswerClick: answerId => dispatch(quizAnswerClick(answerId)),
-    retryQuiz: () => dispatch(retryQuiz())
-  }
-}
+const mapDispatchToProps = {
+  fetchQuizById,
+  quizAnswerClick,
+  retryQuiz,
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Quiz)
+Quiz.propTypes = {
+  fetchQuizById: PropTypes.func,
+  match: PropTypes.object,
+  retryQuiz: PropTypes.func,
+  loading: PropTypes.string,
+  quiz: PropTypes.object,
+  isFinished: PropTypes.func,
+  results: PropTypes.object,
+  activeQuestion: PropTypes.number,
+  quizAnswerClick: PropTypes.func,
+  answerState: PropTypes.object,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Quiz);

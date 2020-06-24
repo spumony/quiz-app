@@ -1,22 +1,23 @@
-import React, {Component} from 'react'
-import Layout from './hoc/Layout/Layout'
-import Quiz from './containers/Quiz/Quiz'
-import {Route, Switch, Redirect, withRouter} from 'react-router-dom'
-import Auth from './containers/Auth/Auth'
-import QuizCreator from './containers/QuizCreator/QuizCreator'
-import QuizList from './containers/QuizList/QuizList'
-import {connect} from 'react-redux'
-import Logout from './components/Logout/Logout'
-import { autoLogin } from './store/actions/auth'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import {
+  Route, Switch, Redirect, withRouter,
+} from 'react-router-dom';
+import { connect } from 'react-redux';
+import Layout from './hoc/Layout/Layout';
+import Quiz from './containers/Quiz/Quiz';
+import Auth from './containers/Auth/Auth';
+import QuizCreator from './containers/QuizCreator/QuizCreator';
+import QuizList from './containers/QuizList/QuizList';
+import Logout from './components/Logout/Logout';
+import { autoLogin } from './store/actions/auth';
 
 class App extends Component {
-
   componentDidMount() {
-    this.props.autoLogin()
+    this.props.autoLogin();
   }
 
   render() {
-
     let routes = (
       <Switch>
         <Route path="/auth" component={Auth} />
@@ -24,7 +25,7 @@ class App extends Component {
         <Route path="/" exact component={QuizList} />
         <Redirect to="/" />
       </Switch>
-    )
+    );
 
     if (this.props.isAuth) {
       routes = (
@@ -35,27 +36,28 @@ class App extends Component {
           <Route path="/" exact component={QuizList} />
           <Redirect to="/" />
         </Switch>
-      )
+      );
     }
 
     return (
       <Layout>
         {routes}
       </Layout>
-    )
+    );
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    isAuth: !!state.auth.token
-  }
-}
+const mapStateToProps = state => ({
+  isAuth: !!state.auth.token,
+});
 
-const mapDispatchToProps = dispatch => {
-  return {
-    autoLogin: () => dispatch(autoLogin())
-  }
-}
+const mapDispatchToProps = {
+  autoLogin,
+};
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App))
+App.propTypes = {
+  autoLogin: PropTypes.func,
+  isAuth: PropTypes.bool,
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

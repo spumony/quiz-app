@@ -1,60 +1,64 @@
-import React, {Component} from 'react'
-import classes from './Drawer.module.css'
-import Backdrop from '../../UI/Backdrop/Backdrop'
-import {NavLink} from 'react-router-dom'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { NavLink } from 'react-router-dom';
+import classes from './Drawer.module.css';
+import Backdrop from '../../UI/Backdrop/Backdrop';
 
 class Drawer extends Component {
-
   clickHandler = () => {
-    this.props.onClose()
+    this.props.onClose();
   }
 
   renderLinks(links) {
-    return links.map((link, index) => {
-      return (
-        <li key={index}>
-          <NavLink
-            to={link.to}
-            exact={link.exact}
-            activeClassName={classes.active}
-            onClick={this.clickHandler}
-          >
-            {link.label}
-          </NavLink>
-        </li>
-      )
-    })
+    return links.map((link, index) => (
+      <li key={index}>
+        <NavLink
+          to={link.to}
+          exact={link.exact}
+          activeClassName={classes.active}
+          onClick={this.clickHandler}
+        >
+          {link.label}
+        </NavLink>
+      </li>
+    ));
   }
 
   render() {
-    const cls = [classes.Drawer]
+    const links = [
+      { to: '/', label: 'List', exact: true },
+    ];
+
+    const cls = [classes.Drawer];
 
     if (!this.props.isOpen) {
-      cls.push(classes.close)
+      cls.push(classes.close);
     }
 
-    const links = [
-      {to: '/', label: 'List', exact: true}
-    ]
-
     if (this.props.isAuth) {
-      links.push({to: '/quiz-creator', label: 'Create quiz', exact: false})
-      links.push({to: '/logout', label: 'Log out', exact: false})
+      links.push({ to: '/quiz-creator', label: 'Create quiz', exact: false });
+      links.push({ to: '/logout', label: 'Log out', exact: false });
     } else {
-      links.push({to: '/auth', label: 'Log in', exact: false})
+      links.push({ to: '/auth', label: 'Log in', exact: false });
     }
 
     return (
-      <React.Fragment>
-      <nav className={cls.join(' ')}>
-        <ul>
-          { this.renderLinks(links) }
-        </ul>
-      </nav>
-      { this.props.isOpen ? <Backdrop onClick={this.props.onClose} /> : null }
-      </React.Fragment>
-    )
+      <>
+        <nav className={cls.join(' ')}>
+          <ul>
+            {this.renderLinks(links)}
+          </ul>
+        </nav>
+        {this.props.isOpen ? <Backdrop onClick={this.props.onClose} /> : null}
+      </>
+    );
   }
 }
 
-export default Drawer
+Drawer.propTypes = {
+  onClose: PropTypes.func,
+  isOpen: PropTypes.func,
+  isAuth: PropTypes.func,
+};
+
+export default Drawer;
